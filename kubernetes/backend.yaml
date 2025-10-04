@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: rj1608/jenkins-project-backend:v2.1
+          image: rj1608/jenkins-project-backend:v5
           ports:
             - containerPort: 6000
 ---

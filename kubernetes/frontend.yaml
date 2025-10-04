@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: rj1608/jenkins-project-frontend
+          image: rj1608/jenkins-project-frontend:v5
           ports:
             - containerPort: 80
 ---
