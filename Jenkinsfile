@@ -7,7 +7,7 @@ pipeline {
     }
     
     parameters {
-        // string(name: 'FRONTEND_DOCKER_TAG', defaultValue: '', description: 'Setting docker image for latest push')
+        string(name: 'FRONTEND_DOCKER_TAG', defaultValue: '', description: 'Setting docker image for latest push')
         string(name: 'BACKEND_DOCKER_TAG', defaultValue: '', description: 'Setting docker image for latest push')
     }
     
@@ -15,12 +15,12 @@ pipeline {
         stage("Validate Parameters") {
             steps {
                 script {
-                    if (params.BACKEND_DOCKER_TAG == '') {
-                        error("BACKEND_DOCKER_TAG must be provided.")
-                    }
-                    // if (params.FRONTEND_DOCKER_TAG == '' || params.BACKEND_DOCKER_TAG == '') {
-                    //     error("FRONTEND_DOCKER_TAG and BACKEND_DOCKER_TAG must be provided.")
+                    // if (params.BACKEND_DOCKER_TAG == '') {
+                    //     error("BACKEND_DOCKER_TAG must be provided.")
                     // }
+                    if (params.FRONTEND_DOCKER_TAG == '' || params.BACKEND_DOCKER_TAG == '') {
+                        error("FRONTEND_DOCKER_TAG and BACKEND_DOCKER_TAG must be provided.")
+                    }
                 }
             }
         }
@@ -103,9 +103,9 @@ pipeline {
                             docker_build("jenkins-project-backend","${params.BACKEND_DOCKER_TAG}","rj1608")
                         }
                     
-                        // dir('frontend'){
-                        //     docker_build("wanderlust-frontend-beta","${params.FRONTEND_DOCKER_TAG}","trainwithshubham")
-                        // }
+                        dir('frontend'){
+                            docker_build("jenkins-project-frontend","${params.FRONTEND_DOCKER_TAG}","rj1608")
+                        }
                 }
             }
         }
@@ -114,7 +114,7 @@ pipeline {
             steps{
                 script{
                     docker_push("jenkins-project-backend","${params.BACKEND_DOCKER_TAG}","rj1608") 
-                    // docker_push("wanderlust-frontend-beta","${params.FRONTEND_DOCKER_TAG}","trainwithshubham")
+                    docker_push("jenkins-project-frontend","${params.FRONTEND_DOCKER_TAG}","rj1608")
                 }
             }
         }
@@ -123,7 +123,7 @@ pipeline {
         success{
             archiveArtifacts artifacts: '*.xml', followSymlinks: false
             build job: "My CD JOB", parameters: [
-                // string(name: 'FRONTEND_DOCKER_TAG', value: "${params.FRONTEND_DOCKER_TAG}"),
+                string(name: 'FRONTEND_DOCKER_TAG', value: "${params.FRONTEND_DOCKER_TAG}"),
                 string(name: 'BACKEND_DOCKER_TAG', value: "${params.BACKEND_DOCKER_TAG}")
             ]
         }
